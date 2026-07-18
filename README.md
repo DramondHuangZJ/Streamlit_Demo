@@ -26,3 +26,20 @@ http://localhost:8501
 5. Short 7-point rating questionnaire.
 
 The game logic is simplified for research demonstration. It is not a complete implementation of competitive Mahjong.
+
+## Email Response Delivery
+
+When email secrets are configured, each submitted questionnaire response is emailed as a one-row CSV attachment.
+
+For Gmail, create an app password and add these secrets in Streamlit Cloud:
+
+```toml
+[email]
+sender = "your_sender_email@gmail.com"
+password = "your_gmail_app_password"
+receiver = "your_receiver_email@example.com"
+smtp_server = "smtp.gmail.com"
+smtp_port = 465
+```
+
+Do not commit `.streamlit/secrets.toml` to GitHub. Use `.streamlit/secrets.example.toml` only as a template.

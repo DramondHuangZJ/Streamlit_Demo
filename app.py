@@ -1,6 +1,10 @@
 import random
+import smtplib
+import uuid
 from collections import Counter
 from datetime import datetime
+from email.message import EmailMessage
+from io import StringIO
 
 import pandas as pd
 import streamlit as st
@@ -61,6 +65,7 @@ def init_state():
         st.session_state.quiz_submitted = False
         st.session_state.quiz_score = None
         st.session_state.condition = random.choice(["AI support", "Static rule guide"])
+        st.session_state.participant_id = f"P-{uuid.uuid4().hex[:10]}"
 
 
 def tile_sort_key(tile):
@@ -115,6 +120,67 @@ def discard_tile(tile):
 
 def likert(label, key):
     return st.slider(label, 1, 7, 4, key=key)
+
+
+def get_email_settings():
+    try:
+        email_settings = st.secrets["email"]
+    except (FileNotFoundError, KeyError):
+        return None
+
+    required_keys = ["sender", "password", "receiver"]
+    if not all(email_settings.get(key) for key in required_keys):
+        return None
+
+    return {
+        "sender": email_settings["sender"],
+        "password": email_settings["password"],
+        "receiver": email_settings["receiver"],
+        "smtp_server": email_settings.get("smtp_server", "smtp.gmail.com"),
+        "smtp_port": int(email_settings.get("smtp_port", 465)),
+    }
+
+
+def row_to_csv_bytes(row):
+    output = StringIO()
+    pd.DataFrame([row]).to_csv(output, index=False)
+    return output.getvalue().encode("utf-8")
+
+
+def email_response_csv(row):
+    settings = get_email_settings()
+    if not settings:
+        return False, "Email is not configured yet. Add email credentials in Streamlit Secrets."
+
+    csv_bytes = row_to_csv_bytes(row)
+    filename = f"mahjong_response_{row['participant_id']}.csv"
+
+    message = EmailMessage()
+    message["Subject"] = f"New Mahjong Study Response - {row['participant_id']}"
+    message["From"] = settings["sender"]
+    message["To"] = settings["receiver"]
+    message.set_content(
+        "A participant submitted a new Mahjong study response.\n\n"
+        f"Participant ID: {row['participant_id']}\n"
+        f"Timestamp: {row['timestamp']}\n"
+        f"Condition: {row['condition']}\n"
+        f"Quiz score: {row['quiz_score']}\n"
+    )
+    message.add_attachment(
+        csv_bytes,
+        maintype="text",
+        subtype="csv",
+        filename=filename,
+    )
+
+    try:
+        with smtplib.SMTP_SSL(settings["smtp_server"], settings["smtp_port"]) as smtp:
+            smtp.login(settings["sender"], settings["password"])
+            smtp.send_message(message)
+    except Exception as exc:
+        return False, f"Email failed: {exc}"
+
+    return True, f"Response emailed to {settings['receiver']}."
 
 
 def page_style():
@@ -312,6 +378,7 @@ def render_questionnaire():
     if submitted:
         row = {
             "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "participant_id": st.session_state.participant_id,
             "stimulus": "Chinese Mahjong demo",
             "condition": st.session_state.condition,
             "turns_completed": st.session_state.turns,
@@ -319,16 +386,24 @@ def render_questionnaire():
             **ratings,
         }
         st.session_state.response = row
-        st.success("Response saved for this demo session.")
+        sent, message = email_response_csv(row)
+        st.session_state.email_sent = sent
+        st.session_state.email_message = message
+        if sent:
+            st.success("Response submitted. Thank you.")
+        else:
+            st.warning("Response saved in this session, but it was not emailed.")
+            st.caption(message)
 
     if "response" in st.session_state:
         df = pd.DataFrame([st.session_state.response])
-        st.download_button(
-            "Download demo response CSV",
-            df.to_csv(index=False).encode("utf-8"),
-            file_name="mahjong_demo_response.csv",
-            mime="text/csv",
-        )
+        if not st.session_state.get("email_sent", False):
+            st.download_button(
+                "Download backup response CSV",
+                df.to_csv(index=False).encode("utf-8"),
+                file_name="mahjong_demo_response.csv",
+                mime="text/csv",
+            )
 
 
 def main():
@@ -339,6 +414,7 @@ def main():
     with st.sidebar:
         st.title("Study Demo")
         st.caption("Prototype participant material")
+        st.caption(f"Participant: {st.session_state.participant_id}")
         st.session_state.condition = st.radio("Learning condition", ["AI support", "Static rule guide"], index=0 if st.session_state.condition == "AI support" else 1)
         if st.button("Reset participant session"):
             for key in list(st.session_state.keys()):
