@@ -1,0 +1,16 @@
+{
+  "study_title": {"en": "Board Game Learning Study", "zh": "桌游学习研究"},
+  "estimated_minutes": "15–20",
+  "translation_status": "draft_requires_review",
+  "research_contact": "",
+  "institution": "",
+  "ethics_reference": "",
+  "retention_policy": "",
+  "materials_approved": false,
+  "translation_approved": false,
+  "prices_approved": false,
+  "external_screening_approved": false,
+  "handoff_method": "participant_reported",
+  "handoff_timing": "after_each_game",
+  "filler_seconds": 90
+}
