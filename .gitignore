@@ -14,3 +14,5 @@ research/*_extracted.txt
 *.db
 
 research/*.jpg
+
+research/qa_legacy/

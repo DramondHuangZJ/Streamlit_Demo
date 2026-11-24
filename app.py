@@ -97,7 +97,7 @@ h1{font-size:2.2rem!important;line-height:1.2!important;letter-spacing:-.03em}
 h2{font-size:1.5rem!important;margin-top:1.2rem!important}
 p,li{line-height:1.75} [data-testid="stMetricValue"]{font-size:1.7rem}
 .stButton>button,.stLinkButton>a{min-height:48px;border-radius:10px}
-[data-testid="stRadio"] label{padding:5px 0} [data-testid="stCaptionContainer"]{line-height:1.6}
+[data-testid="stRadio"] label{padding:5px 0} [data-testid="stCaptionContainer"],[data-testid="stCaptionContainer"] p{line-height:1.6;color:#51625a}
 @media(max-width:600px){.block-container{padding:4.5rem 1rem 2rem}h1{font-size:1.8rem!important}}
 </style>''',unsafe_allow_html=True)
 
