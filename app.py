@@ -79,7 +79,7 @@ def admin():
     st.caption('Task records contain no scale ratings. Join the external game-level questionnaire export by participant_id and game_id using admin.py merge-external.')
     st.json({'app_version':APP_VERSION,'mode':MODE,'collection_blockers':collection_blockers(SETTINGS) if MODE=='collection' else ['Preview mode: test records only.']})
 
-SETTINGS={k:setting(k) for k in ['PILOT_MODE','PILOT_APPROVALS_CONFIRMED','PILOT_STORAGE_APPROVED','PILOT_SURVEY_URL_1','PILOT_SURVEY_URL_2','PILOT_PUBLIC_URL']}
+SETTINGS={k:setting(k) for k in ['PILOT_MODE','PILOT_APPROVALS_CONFIRMED','PILOT_STORAGE_APPROVED','PILOT_SURVEY_URL_1','PILOT_SURVEY_URL_2','PILOT_PUBLIC_URL','PILOT_QUESTIONNAIRE_VERSION']}
 MODE=setting('PILOT_MODE','preview')
 if MODE not in ('preview','collection'): st.error('PILOT_MODE must be preview or collection.');st.stop()
 DB_PATH=Path(setting('PILOT_DB_PATH',str(ROOT/'data/pilot.sqlite3')))
@@ -108,6 +108,10 @@ token=st.query_params.get('resume') or st.session_state.get('resume_token')
 p=STORE.resume(token) if token else None
 if token and p is None:
     st.error(tr('This session link is invalid or was withdrawn. Open the original study link to start again.','此会话链接无效或已撤回。请从原始研究链接重新进入。'));st.stop()
+if p and not STORE.materials_match(p['participant_id']):
+    st.info(tr('The study materials changed after this preview session began. Start a fresh session from the original study link; your earlier records remain versioned.','此预览会话开始后研究材料已更新。请从原始研究链接开始新的会话；先前记录仍保留其版本。'))
+    st.link_button(tr('Open the study start page','打开研究起始页'),setting('PILOT_PUBLIC_URL','http://localhost:8502'))
+    st.stop()
 if p:
     st.session_state.participant_id=p['participant_id'];st.session_state.resume_token=token
     st.session_state.language=p['language'];LANG=p['language']
@@ -125,7 +129,7 @@ if not p:
         st.write(tr('Participation is voluntary. This site saves anonymous task responses and elapsed page times as you proceed. It does not ask for your name or email. You may leave before finishing, or use “Withdraw” to delete saved website answers before final submission. External-platform withdrawal follows that platform’s study information.','参与完全自愿。本网站会逐步保存匿名任务回答和页面经过时间，不询问姓名或邮箱。您可在完成前离开，或在最终提交前使用“撤回”删除已保存的网站回答。外部平台的撤回按其研究说明处理。'))
     contact=STUDY['research_contact'] or tr('[Research contact pending confirmation]','[研究联系信息待确认]')
     st.caption(contact)
-    st.caption(tr('Preview uses original schematic illustrations and an experimental price placeholder. These materials are not approved for recruitment yet.','预览使用原创示意图和暂定实验价格；材料尚未获准用于正式招募。'))
+    st.caption(tr('Preview uses AI-generated product renderings, official rulebook figure captures and an experimental price placeholder. These materials are not approved for recruitment yet.','预览使用AI生成的产品展示图、官方规则书局部图和暂定实验价格；材料尚未获准用于正式招募。'))
     if st.button(tr('Start preview' if MODE=='preview' else 'Start the game activities','开始预览' if MODE=='preview' else '开始游戏活动'),type='primary',width='stretch'):
         forced=None
         if MODE=='preview' and setting('PILOT_TEST_ORDER'):
@@ -156,10 +160,10 @@ if gid:
 with st.empty().container():
     if kind=='product':
         st.write(text(game['culture'],LANG))
-        asset(game['hero_asset'],tr('Temporary original research schematic; not commercial game artwork.','暂用原创研究示意图，并非商业游戏美术素材。'))
+        asset(game['hero_asset'],tr('AI-generated research rendering based on official product references; not an exact product photograph.','根据官方产品资料生成的AI研究展示图，并非精确的产品照片。'))
         st.write(text(game['description'],LANG))
         c1,c2,c3=st.columns(3)
-        c1.metric(tr('Players','玩家人数'),game['players']);c2.metric(tr('Minutes (full game)','分钟（完整游戏）'),game['minutes']);c3.metric(tr('Price scenario','价格情境'),'CNY 299')
+        c1.metric(tr('Players','玩家人数'),game['players']);c2.metric(tr('Minutes (full game)','分钟（完整游戏）'),game['minutes']);c3.metric(tr('Price scenario','价格情境'),game.get('price_display','CNY 299'))
         st.caption(text(game['price'],LANG))
         st.subheader(tr('Your objective','游戏目标'));st.write(text(game['objective'],LANG))
         st.subheader(tr('In the box','组件概览'));st.write(text(game['components'],LANG))
@@ -168,6 +172,12 @@ with st.empty().container():
         st.write(tr('Read the six short sections and two examples. You can keep this page open until you are ready.','请阅读以下6个简短部分和2个示例。准备好后再继续。'))
         for sec in game['sections']:
             st.subheader(text(sec['title'],LANG));st.write(text(sec['text'],LANG))
+        st.subheader(tr('The real game components','真实游戏组件'))
+        cols=st.columns(2)
+        for col,capture in zip(cols,game['rule_captures']):
+            with col:
+                asset(capture['asset'],text(capture['caption'],LANG))
+                st.caption(tr('Source: official rulebook, printed page ','来源：官方规则书，印刷页码 ')+str(capture['page']))
         for example in game['examples']:
             st.subheader(text(example['title'],LANG));asset(example['asset'],tr('Original explanatory schematic','原创说明示意图'));st.write(text(example['text'],LANG))
         st.subheader(tr('Quick questions','简短答疑'))
@@ -188,12 +198,12 @@ with st.empty().container():
         st.subheader(tr('Your questionnaire','您的问卷'))
         st.write(tr('Please answer the questionnaire about the game you have just experienced, then return to this page. Keep this tab open.','请填写关于刚体验游戏的问卷，然后回到本页面。请保留本标签页。'))
         base=setting(f'PILOT_SURVEY_URL_{position}')
-        STORE.prepare_handoff(p['participant_id'],gid,bool(base))
+        STORE.prepare_handoff(p['participant_id'],gid,bool(base),setting('PILOT_QUESTIONNAIRE_VERSION','external-unconfigured'))
         public=setting('PILOT_PUBLIC_URL','http://localhost:8502').rstrip('/')
         return_url=public+'/?'+urlencode({'resume':st.session_state.resume_token})
         if base:
             try:
-                url=questionnaire_url(base,p['participant_id'],gid,position,order,LANG,return_url)
+                url=questionnaire_url(base,p['participant_id'],gid,position,order,LANG,return_url,setting('PILOT_QUESTIONNAIRE_VERSION','external-unconfigured'))
                 st.link_button(tr('Open questionnaire in a new tab','在新标签页打开问卷'),url,type='primary',width='stretch')
             except ValueError as e: st.error(str(e));st.stop()
             st.code(p['participant_id'],language=None)

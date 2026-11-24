@@ -53,12 +53,15 @@ class Store:
             CREATE TABLE IF NOT EXISTS survey_handoffs(
               participant_id TEXT REFERENCES participants(participant_id), game_id TEXT,
               generated_at TEXT NOT NULL, returned_at TEXT, confirmation_method TEXT,
-              configured INTEGER NOT NULL, PRIMARY KEY(participant_id,game_id));
+              configured INTEGER NOT NULL, questionnaire_version TEXT NOT NULL DEFAULT 'external-unconfigured', PRIMARY KEY(participant_id,game_id));
             CREATE TABLE IF NOT EXISTS events(
               event_id INTEGER PRIMARY KEY AUTOINCREMENT,
               participant_id TEXT REFERENCES participants(participant_id),
               event_type TEXT NOT NULL, recorded_at TEXT NOT NULL, details TEXT NOT NULL);
             ''')
+            if 'questionnaire_version' not in {r[1] for r in db.execute('PRAGMA table_info(survey_handoffs)')}:
+                db.execute("ALTER TABLE survey_handoffs ADD COLUMN questionnaire_version TEXT NOT NULL DEFAULT 'external-unconfigured'")
+            db.execute('PRAGMA user_version=1')
     @contextmanager
     def connect(self):
         db=sqlite3.connect(self.path,timeout=30,isolation_level=None); db.row_factory=sqlite3.Row
@@ -96,11 +99,11 @@ class Store:
             row=db.execute('SELECT participant_id FROM participants WHERE resume_hash=?',(digest(token),)).fetchone()
             return self.participant(row[0]) if row else None
     def stage(self,p): return pages((p['first_game'],p['second_game']))[p['page_index']]
-    def prepare_handoff(self,pid,game,configured):
+    def prepare_handoff(self,pid,game,configured,questionnaire_version="external-unconfigured"):
         p=self.participant(pid)
         if p is None or self.stage(p)!=f'handoff:{game}' or p['status']!='in_progress': raise StaleStep('Not on the questionnaire handoff.')
         with self.transaction() as db:
-            db.execute('INSERT OR IGNORE INTO survey_handoffs VALUES(?,?,?,NULL,NULL,?)',(pid,game,now(),int(configured)))
+            db.execute('INSERT OR IGNORE INTO survey_handoffs(participant_id,game_id,generated_at,configured,questionnaire_version) VALUES(?,?,?,?,?)',(pid,game,now(),int(configured),questionnaire_version))
     def advance(self,pid,expected,answers=None):
         answers=answers or {}; stamp=now()
         with self.transaction() as db:
@@ -140,6 +143,10 @@ class Store:
             for table in TABLES[1:]: db.execute(f'DELETE FROM {table} WHERE participant_id=?',(pid,))
             # Retain only an anonymous administrative withdrawal count.
             db.execute("UPDATE participants SET status='withdrawn',resume_hash=?,language='',completed_at=NULL WHERE participant_id=?",(digest(secrets.token_urlsafe(32)),pid))
+    def materials_match(self,pid):
+        with self.connect() as db:
+            rows=db.execute('SELECT game_id,stimulus_version,rules_version FROM game_sessions WHERE participant_id=?',(pid,)).fetchall()
+        return len(rows)==2 and all(r['stimulus_version']==GAMES[r['game_id']]['stimulus_version'] and r['rules_version']==GAMES[r['game_id']]['rules_version'] for r in rows)
     def rows(self,table,include_tests=False,completed_only=False):
         if table not in TABLES: raise ValueError('Unknown table.')
         where=[]; params=[]

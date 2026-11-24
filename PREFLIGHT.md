@@ -1,6 +1,8 @@
 # Pilot preflight
 
-Reviewed 24 November 2026. No application code has been written at this stage.
+Initial review: 24 November 2026. This preflight records the document audit before implementation; the implementation and verification are documented in README.md and docs/.
+
+**Subsequent user decisions:** bilingual English/Simplified Chinese; use the 7 November supervisor-revised files; no on-site questionnaire; external questionnaire after each game; comprehension quizzes stay on the website. Product pages must show the real product appearance via screenshots or AI renderings, and official rulebook captures are encouraged. These later decisions supersede the earlier website questionnaire sections below.
 
 ## Scope
 
@@ -38,9 +40,9 @@ Culture recognition, recognition confidence, language ability, current residence
 
 Accessed 24 November 2026. Rule details, answer keys and page references still require item-level checking before implementation. Do not use Azul expansions or alternate scoring boards as the base game. Official product pictures are discoverable, but public availability is not evidence of reuse permission. Use original schematic examples or clearly identified research placeholders where rights are unconfirmed.
 
-## Pending language decision
+## Language decision (now confirmed)
 
-The inspected participant questionnaire is English. No approved Chinese version was identified in the priority files. Ask whether to build English, Simplified Chinese (translation pending review), or bilingual, and whether a newer approved version exists. Do not silently call a generated translation approved.
+The inspected participant questionnaire is English. No approved Chinese version was identified in the priority files. The user confirmed bilingual delivery and the 7 November source version. Do not silently call a generated translation approved.
 
 ## Hosting and recruitment
 

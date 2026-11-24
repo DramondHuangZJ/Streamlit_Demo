@@ -75,3 +75,25 @@ def merge_external(store,path,include_tests=False):
     site=frame(store,'game_sessions',include_tests,True)
     merged=site.merge(ext,on=['participant_id','game_id'],how='left',validate='one_to_one',indicator='external_match')
     return merged
+
+def external_report(store,path,include_tests=False):
+    """Optional local diagnostics for external ratings; no survey UI is added."""
+    merged=merge_external(store,path,include_tests)
+    result={'label':'External stimulus-validation diagnostics; not final hypothesis tests','rows':len(merged),'unmatched_website_rows':int((merged.external_match!='both').sum()),'scales':{},'paired_diagnostics':[],'item_distributions':{},'recognition':[],'prior_exposure_counts':[]}
+    for group,items in SCALES.items():
+        score=group+'_score'
+        if score in merged.columns:
+            result['scales'][group]=merged.groupby('game_id')[score].agg(['count','mean','std']).reset_index().where(pd.notna, None).to_dict('records')
+            result['paired_diagnostics'].append(paired_diagnostic(merged,score,.5))
+        for i in items:
+            c=group+str(i)
+            if c in merged.columns:
+                result['item_distributions'][c]=merged.groupby('game_id')[c].value_counts(dropna=False).rename('count').reset_index().to_dict('records')
+    if 'culture_recognition' in merged.columns:
+        for game,rows in merged.groupby('game_id'):
+            values=rows.culture_recognition.dropna().astype(str).str.lower()
+            result['recognition'].append(dict(game_id=game,n_answered=len(values),accuracy=float(values.isin(GAMES[game]['recognition']).mean()) if len(values) else None,counts=values.value_counts().to_dict()))
+    if 'prior_exposure' in merged.columns:
+        result['prior_exposure_counts']=merged.groupby('game_id').prior_exposure.value_counts(dropna=False).rename('count').reset_index().to_dict('records')
+    result['note']='Proposed ±0.5 seven-point rating bounds require approval. Confidence intervals describe paired differences; no automatic equivalence declaration, hypothesis test, item deletion or participant exclusion is performed. Culture-recognition codes must follow the documented mapping.'
+    return result

@@ -123,3 +123,27 @@ def test_export_keeps_empty_headers_and_excludes_tests(store):
     assert pd.read_csv(z.open('comprehension_responses.csv')).empty
     assert 'item_code' in pd.read_csv(z.open('comprehension_responses.csv')).columns
     assert json.loads(z.read('manifest.json'))['includes_tests'] is False
+
+def test_material_change_cannot_silently_mix_versions(store):
+    pid,_=store.start()
+    assert store.materials_match(pid)
+    with store.transaction() as db: db.execute("UPDATE game_sessions SET stimulus_version='obsolete' WHERE participant_id=?",(pid,))
+    assert not store.materials_match(pid)
+
+def test_questionnaire_version_recorded_on_handoff(store):
+    pid,_=store.start()
+    with store.transaction() as db:db.execute('UPDATE participants SET page_index=4 WHERE participant_id=?',(pid,))
+    game=store.participant(pid)['first_game'];store.prepare_handoff(pid,game,True,'external-pilot-v3')
+    assert store.rows('survey_handoffs',True)[0]['questionnaire_version']=='external-pilot-v3'
+
+def test_external_descriptive_report(store,tmp_path):
+    from pilot.analysis import external_report
+    pid,_=complete(store)
+    p=tmp_path/'ratings.csv'
+    rows=[dict(participant_id=pid,game_id=g,PCD1=3,PCD2=4,PCD3=5,PCD4=4,PCD5=4,culture_recognition='china' if g=='dragon_castle' else 'portugal',prior_exposure='no') for g in GAMES]
+    pd.DataFrame(rows).to_csv(p,index=False)
+    r=external_report(store,p,True)
+    assert all(x['accuracy']==1 for x in r['recognition'])
+    assert r['paired_diagnostics'][0]['n_pairs']==1
+    assert r['paired_diagnostics'][0]['ci95_low'] is None
+    assert r['scales']['PCD'][0]['mean']==4

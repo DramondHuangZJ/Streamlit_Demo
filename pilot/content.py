@@ -4,7 +4,7 @@ from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 ROOT=Path(__file__).resolve().parents[1]
 GAMES=json.loads((ROOT/'config/games.json').read_text())
-APP_VERSION='pilot-1.0.0'
+APP_VERSION='pilot-1.1.0'
 PROTOCOL_VERSION='external-survey-per-game-1'
 
 def text(value,lang='en'):
@@ -27,11 +27,11 @@ def score_answers(game,kind,answers):
         scored.append((q['code'],a,int(a==q['answer']),q['rule_ref']))
     return scored
 
-def questionnaire_url(base,pid,game,position,order,language,return_url):
+def questionnaire_url(base,pid,game,position,order,language,return_url,questionnaire_version="external-unconfigured"):
     parsed=urlsplit(base)
     if parsed.scheme!='https' or not parsed.netloc or parsed.username or parsed.password:
         raise ValueError('External questionnaire URL must be HTTPS without embedded credentials.')
-    reserved={'participant_id','game_id','game_position','assigned_order','language','return_url','stimulus_version','rules_version','protocol_version'}
+    reserved={'participant_id','game_id','game_position','assigned_order','language','return_url','stimulus_version','rules_version','protocol_version','questionnaire_version'}
     pairs=[(k,v) for k,v in parse_qsl(parsed.query,keep_blank_values=True) if k not in reserved]
-    pairs += list(dict(participant_id=pid,game_id=game,game_position=position,assigned_order=','.join(order),language=language,return_url=return_url,stimulus_version=GAMES[game]['stimulus_version'],rules_version=GAMES[game]['rules_version'],protocol_version=PROTOCOL_VERSION).items())
+    pairs += list(dict(participant_id=pid,game_id=game,game_position=position,assigned_order=','.join(order),language=language,return_url=return_url,stimulus_version=GAMES[game]['stimulus_version'],rules_version=GAMES[game]['rules_version'],protocol_version=PROTOCOL_VERSION,questionnaire_version=questionnaire_version).items())
     return urlunsplit((parsed.scheme,parsed.netloc,parsed.path,urlencode(pairs),parsed.fragment))

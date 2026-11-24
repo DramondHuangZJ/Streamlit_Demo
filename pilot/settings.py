@@ -14,4 +14,6 @@ def collection_blockers(settings):
     for key in ('PILOT_SURVEY_URL_1','PILOT_SURVEY_URL_2','PILOT_PUBLIC_URL'):
         value=settings.get(key,'');p=urlsplit(value)
         if p.scheme!='https' or not p.netloc or p.username or p.password: missing.append(key+' (HTTPS URL required)')
+    if settings.get("PILOT_QUESTIONNAIRE_VERSION", "") in ("", "external-unconfigured"):
+        missing.append("PILOT_QUESTIONNAIRE_VERSION")
     return missing

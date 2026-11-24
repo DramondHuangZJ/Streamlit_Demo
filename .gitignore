@@ -12,3 +12,5 @@ research/*.png
 research/*_extracted.txt
 *.sqlite*
 *.db
+
+research/*.jpg

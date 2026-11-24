@@ -402,7 +402,7 @@
       }
     ],
     "id": "dragon_castle",
-    "stimulus_version": "stimuli-1-draft",
+    "stimulus_version": "stimuli-2-real-product-renderings-draft",
     "rules_version": "rules-1-source-checked",
     "access_date": "2026-11-24",
     "price": {
@@ -410,7 +410,26 @@
       "zh": "人民币299元 · 实验价格暂定"
     },
     "price_is_placeholder": true,
-    "hero_asset": "dragon_castle_hero.svg"
+    "hero_asset": "dragon_castle_product_v1.png",
+    "hero_type": "ai_generated_product_rendering",
+    "rule_captures": [
+      {
+        "asset": "dragon_rule_tiles.png",
+        "caption": {
+          "en": "Actual tile types · official rulebook detail",
+          "zh": "实际牌块类别 · 官方规则书局部图"
+        },
+        "page": 6
+      },
+      {
+        "asset": "dragon_rule_groups.png",
+        "caption": {
+          "en": "Connected groups · official rulebook detail",
+          "zh": "相连牌组 · 官方规则书局部图"
+        },
+        "page": 6
+      }
+    ]
   },
   "azul": {
     "title": "Azul",
@@ -815,7 +834,7 @@
       }
     ],
     "id": "azul",
-    "stimulus_version": "stimuli-1-draft",
+    "stimulus_version": "stimuli-2-real-product-renderings-draft",
     "rules_version": "rules-1-source-checked",
     "access_date": "2026-11-24",
     "price": {
@@ -823,6 +842,25 @@
       "zh": "人民币299元 · 实验价格暂定"
     },
     "price_is_placeholder": true,
-    "hero_asset": "azul_hero.svg"
+    "hero_asset": "azul_product_v1.png",
+    "hero_type": "ai_generated_product_rendering",
+    "rule_captures": [
+      {
+        "asset": "azul_rule_board.png",
+        "caption": {
+          "en": "Actual player board · official rulebook detail",
+          "zh": "实际玩家板 · 官方规则书局部图"
+        },
+        "page": 2
+      },
+      {
+        "asset": "azul_rule_tiling.png",
+        "caption": {
+          "en": "Moving completed lines to the wall · official rulebook detail",
+          "zh": "将完成行移至墙面 · 官方规则书局部图"
+        },
+        "page": 4
+      }
+    ]
   }
 }
