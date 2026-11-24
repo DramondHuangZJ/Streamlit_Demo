@@ -2,7 +2,7 @@
 
 import streamlit as st
 
-DEMO_VERSION = "connection-demo-v1"
+DEMO_VERSION = "connection-demo-v2"
 
 st.set_page_config(page_title="Streamlit Connection Demo", page_icon="🔗", layout="centered")
 
