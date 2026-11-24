@@ -1,0 +1,50 @@
+[
+  {
+    "asset": "dragon_castle_product_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2349443,
+    "sha256": "9b96a11d5f9f881f0a4ce5b8fa36a6d02bbbee5f73085672e28801a4088f304d",
+    "type": "AI-generated research rendering"
+  },
+  {
+    "asset": "azul_product_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2691746,
+    "sha256": "0d1a69635a7a87a6c8c2e3d067c6894663207ed421e0082a26a1bb49a03da898",
+    "type": "AI-generated research rendering"
+  },
+  {
+    "asset": "dragon_castle_trial_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 1914403,
+    "sha256": "9e604583edb16bc0154002cf106baf59b3e935397913757bfd5318f76a5e2529",
+    "type": "AI-generated research rendering"
+  },
+  {
+    "asset": "dragon_castle_scoring_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2828931,
+    "sha256": "91b46b7f6fd7d7b32fe87f0a91a189e8ec49afbff3da01aef9c45aac13c13b4a",
+    "type": "AI-generated research rendering"
+  },
+  {
+    "asset": "azul_trial_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 2556694,
+    "sha256": "9b3a75cd3d053b3bc0c616da1f312666d39c05b1899fb55af3b177db3c9bc9f3",
+    "type": "AI-generated research rendering"
+  },
+  {
+    "asset": "azul_scoring_v1.png",
+    "width": 1536,
+    "height": 1024,
+    "bytes": 3267132,
+    "sha256": "3a8e9dc0e6bbe4c033e318fd4cd792b5d177aaa1054ec54b177fea3dbb9079f4",
+    "type": "AI-generated research rendering"
+  }
+]

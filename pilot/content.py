@@ -7,6 +7,13 @@ GAMES=json.loads((ROOT/'config/games.json').read_text())
 APP_VERSION='pilot-1.1.0'
 PROTOCOL_VERSION='external-survey-per-game-1'
 
+def reload_materials():
+    """Refresh config on reruns while preserving shared references in storage/scoring."""
+    fresh=json.loads((ROOT/'config/games.json').read_text())
+    if set(fresh)!={'dragon_castle','azul'}: raise ValueError('Both game configurations are required.')
+    GAMES.clear();GAMES.update(fresh)
+
+
 def text(value,lang='en'):
     return value.get(lang,value.get('en','')) if isinstance(value,dict) else value
 

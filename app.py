@@ -7,10 +7,13 @@ from urllib.parse import urlencode
 
 import streamlit as st
 import streamlit.components.v1 as components
-from pilot.content import GAMES,ROOT,APP_VERSION,text,pages,questionnaire_url
+from pilot.content import GAMES,ROOT,APP_VERSION,text,pages,questionnaire_url,reload_materials
 from pilot.storage import Store,StaleStep,seconds
 from pilot.analysis import report,export_zip,frame
-from pilot.settings import STUDY,collection_blockers
+from pilot.settings import STUDY,collection_blockers,reload_study
+
+reload_materials()
+reload_study()
 
 st.set_page_config(page_title='Board Game Learning Study | 桌游学习研究',page_icon='◈',layout='centered',initial_sidebar_state='collapsed')
 

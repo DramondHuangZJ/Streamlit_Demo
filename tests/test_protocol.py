@@ -148,3 +148,16 @@ def test_external_descriptive_report(store,tmp_path):
     assert r['paired_diagnostics'][0]['ci95_low'] is None
     assert r['scales']['PCD'][0]['mean']==4
     json.dumps(r,allow_nan=False)
+
+def test_config_reload_preserves_shared_game_reference(tmp_path,monkeypatch):
+    from pilot import content
+    from copy import deepcopy
+    previous=deepcopy(content.GAMES);shared=content.GAMES
+    (tmp_path/'config').mkdir();fresh=deepcopy(previous);fresh['azul']['stimulus_version']='test-updated'
+    (tmp_path/'config/games.json').write_text(json.dumps(fresh))
+    monkeypatch.setattr(content,'ROOT',tmp_path)
+    try:
+        content.reload_materials()
+        assert content.GAMES is shared and shared['azul']['stimulus_version']=='test-updated'
+    finally:
+        shared.clear();shared.update(previous)

@@ -42,7 +42,8 @@ def test_complete_bilingual_sessions_and_reruns(tmp_path,monkeypatch,order,langu
 
 def test_missing_asset_has_readable_fallback(tmp_path,monkeypatch):
     monkeypatch.setenv('PILOT_DB_PATH',str(tmp_path/'missing.sqlite3'));monkeypatch.setenv('PILOT_TEST_ORDER',','.join(ORDERS[0]))
-    monkeypatch.setitem(GAMES['dragon_castle'],'hero_asset','not-present.svg')
+    is_file=Path.is_file
+    monkeypatch.setattr(Path,'is_file',lambda path: False if path.name=='dragon_castle_product_v1.png' else is_file(path))
     a=AppTest.from_file(str(APP)).run();a.radio[0].set_value('English').run();a.button[0].click().run()
     assert not a.exception and any('Illustration unavailable' in x.value for x in a.info)
 

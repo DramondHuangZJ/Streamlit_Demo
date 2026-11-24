@@ -12,7 +12,7 @@ Use Python 3.11 or 3.12. In a terminal:
 
 ```sh
 cd '/Users/dramond/.codex/.chatgpt-projects/g-p-6a8abbc6e30c8191aa8cd7203958ed24/pilot_study_streamlit'
-python3 -m venv .venv
+/Users/dramond/anaconda3/bin/python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-dev.txt
 python -m streamlit run app.py --server.address 127.0.0.1 --server.port 8502
@@ -69,7 +69,7 @@ Repository: https://github.com/DramondHuangZJ/Streamlit_Demo/tree/pilot-study
 
 The pilot uses branch **`pilot-study`**, entrypoint **`app.py`**. The existing demo stays on `main`. After each completed code update: verify, commit and push the pilot branch. Streamlit follows the branch selected for that deployment.
 
-For a separate Cloud preview: create an app with repository `DramondHuangZJ/Streamlit_Demo`, branch `pilot-study`, main file `app.py`, Python 3.12 and `PILOT_MODE="preview"`. Do not replace the existing demo unless desired.
+The separate preview is deployed at https://phd-board-game-pilot.streamlit.app . It is preview-only. To reproduce the deployment: create an app with repository `DramondHuangZJ/Streamlit_Demo`, branch `pilot-study`, main file `app.py`, Python 3.12 and `PILOT_MODE="preview"`. Do not replace the existing demo unless desired.
 
 **Real data collection:** Streamlit Community Cloud does not guarantee local-file persistence. Its local SQLite file is suitable for expendable preview data, not durable participant records. Use approved persistent hosting with a private SQLite volume and tested backups, or implement an approved external database before online recruitment. Do not put the database in GitHub. Collection requires `PILOT_MODE=collection`, both approval environment flags, complete researcher fields and approved materials/translation/prices/external screening. Those switches are administrative attestations, not proof of ethics approval or eligibility.
 

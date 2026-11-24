@@ -3,6 +3,10 @@ from urllib.parse import urlsplit
 from .content import ROOT,GAMES
 STUDY=json.loads((ROOT/'config/study.json').read_text())
 
+def reload_study():
+    fresh=json.loads((ROOT/"config/study.json").read_text())
+    STUDY.clear();STUDY.update(fresh)
+
 def truth(value): return str(value).strip().lower() in ('1','true','yes')
 def collection_blockers(settings):
     if settings.get('PILOT_MODE','preview')!='collection': return []
