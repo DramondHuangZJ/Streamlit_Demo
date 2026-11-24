@@ -147,3 +147,4 @@ def test_external_descriptive_report(store,tmp_path):
     assert r['paired_diagnostics'][0]['n_pairs']==1
     assert r['paired_diagnostics'][0]['ci95_low'] is None
     assert r['scales']['PCD'][0]['mean']==4
+    json.dumps(r,allow_nan=False)

@@ -11,7 +11,7 @@ The website is a working preview. The items below are explicit recruitment decis
 - [ ] Approve or replace the two AI-generated product renderings after checking their appearance against the physical products/publisher references. They are labelled illustrations, not exact photos. Generated board markings and tile counts must not be used as rule evidence.
 - [ ] Approve usage of the selected official rulebook diagram captures. Their source/printed page is documented; online availability is not itself a reuse licence. They were captured at the user's request. Full PDFs are not redistributed.
 - [ ] Approve the matched CNY 299 experimental price scenario or replace it with an approved retail-price treatment. It is a placeholder, not a statement of current retail price. Keep currency, framing and salience comparable.
-- [ ] Review the original supplementary task diagrams. They are teaching aids with exact hypothetical positions, not photos of a complete real-game setup.
+- [ ] Review the AI-rendered scenario images for tile identity, exact color counts, blocked long sides and the absence of unintended placed pieces. All primary component illustrations are AI renderings; official rulebook captures remain in a separate reference section.
 
 ## Research design decisions
 

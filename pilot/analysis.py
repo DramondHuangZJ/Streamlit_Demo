@@ -1,5 +1,6 @@
 """Descriptive task diagnostics and analysis-ready exports, never hypothesis tests."""
 import csv
+import math
 import io
 import json
 import zipfile
@@ -96,4 +97,10 @@ def external_report(store,path,include_tests=False):
     if 'prior_exposure' in merged.columns:
         result['prior_exposure_counts']=merged.groupby('game_id').prior_exposure.value_counts(dropna=False).rename('count').reset_index().to_dict('records')
     result['note']='Proposed ±0.5 seven-point rating bounds require approval. Confidence intervals describe paired differences; no automatic equivalence declaration, hypothesis test, item deletion or participant exclusion is performed. Culture-recognition codes must follow the documented mapping.'
-    return result
+    return _finite_values(result)
+
+def _finite_values(value):
+    if isinstance(value,dict): return {k:_finite_values(v) for k,v in value.items()}
+    if isinstance(value,list): return [_finite_values(v) for v in value]
+    if isinstance(value,float) and not math.isfinite(value): return None
+    return value

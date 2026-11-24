@@ -104,7 +104,7 @@
           "zh": "取走A（商人2）后，B是可取的商人2。C是商人3：类别相同但图案不同。D是两条长边都被挡住的商人2。B是合法的第二块匹配牌。"
         },
         "rule_ref": "p.5",
-        "asset": "dragon_castle_example1.svg"
+        "asset": "dragon_castle_trial_v1.png"
       },
       {
         "title": {
@@ -116,7 +116,7 @@
           "zh": "4块上下左右相连的商人牌，即使数字不同，也组成一组。合并该组得2分，然后可使用库存放置1个神龛。仅对角相邻的牌不属于该组。"
         },
         "rule_ref": "pp.6–7",
-        "asset": "dragon_castle_example2.svg"
+        "asset": "dragon_castle_scoring_v1.png"
       }
     ],
     "faq": [
@@ -402,7 +402,7 @@
       }
     ],
     "id": "dragon_castle",
-    "stimulus_version": "stimuli-2-real-product-renderings-draft",
+    "stimulus_version": "stimuli-3-ai-components-draft",
     "rules_version": "rules-1-source-checked",
     "access_date": "2026-11-24",
     "price": {
@@ -412,6 +412,7 @@
     "price_is_placeholder": true,
     "hero_asset": "dragon_castle_product_v1.png",
     "hero_type": "ai_generated_product_rendering",
+    "trial_asset": "dragon_castle_trial_v1.png",
     "rule_captures": [
       {
         "asset": "dragon_rule_tiles.png",
@@ -536,7 +537,7 @@
           "zh": "一个展示盘含2块蓝砖、1块红砖和1块黄砖。选择蓝色就取走2块蓝砖，其余移至中央。若对应墙面行没有蓝砖，空的两格图案行可容纳这2块蓝砖。"
         },
         "rule_ref": "printed pp.3–4",
-        "asset": "azul_example1.svg"
+        "asset": "azul_trial_v1.png"
       },
       {
         "title": {
@@ -548,7 +549,7 @@
           "zh": "已完成的两格图案行将一块蓝砖移至墙面对应格。没有相邻墙砖时，该砖得1分。另一块移入盒盖。该例没有地板扣分。"
         },
         "rule_ref": "printed pp.4–5",
-        "asset": "azul_example2.svg"
+        "asset": "azul_scoring_v1.png"
       }
     ],
     "faq": [
@@ -834,7 +835,7 @@
       }
     ],
     "id": "azul",
-    "stimulus_version": "stimuli-2-real-product-renderings-draft",
+    "stimulus_version": "stimuli-3-ai-components-draft",
     "rules_version": "rules-1-source-checked",
     "access_date": "2026-11-24",
     "price": {
@@ -844,6 +845,7 @@
     "price_is_placeholder": true,
     "hero_asset": "azul_product_v1.png",
     "hero_type": "ai_generated_product_rendering",
+    "trial_asset": "azul_trial_v1.png",
     "rule_captures": [
       {
         "asset": "azul_rule_board.png",

@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 
 import streamlit as st
+import streamlit.components.v1 as components
 from pilot.content import GAMES,ROOT,APP_VERSION,text,pages,questionnaire_url
 from pilot.storage import Store,StaleStep,seconds
 from pilot.analysis import report,export_zip,frame
@@ -18,7 +19,7 @@ def setting(key,default=''):
     try: return str(st.secrets.get(key,default))
     except (FileNotFoundError,KeyError): return default
 
-LANG=st.session_state.get('language','zh')
+LANG=('en' if st.session_state.get('language_choice')=='English' else st.session_state.get('language','zh'))
 def tr(en,zh): return zh if LANG=='zh' else en
 
 def asset(name,caption):
@@ -88,13 +89,13 @@ STORE=Store(DB_PATH)
 if st.query_params.get('researcher')=='1': admin();st.stop()
 
 st.markdown('''<style>
-.block-container{max-width:880px;padding-top:2rem;padding-bottom:3rem}
+.block-container{max-width:880px;padding-top:4.5rem;padding-bottom:3rem}
 h1{font-size:2.2rem!important;line-height:1.2!important;letter-spacing:-.03em}
 h2{font-size:1.5rem!important;margin-top:1.2rem!important}
 p,li{line-height:1.75} [data-testid="stMetricValue"]{font-size:1.7rem}
 .stButton>button,.stLinkButton>a{min-height:48px;border-radius:10px}
 [data-testid="stRadio"] label{padding:5px 0} [data-testid="stCaptionContainer"]{line-height:1.6}
-@media(max-width:600px){.block-container{padding:1rem 1rem 2rem}h1{font-size:1.8rem!important}}
+@media(max-width:600px){.block-container{padding:4.5rem 1rem 2rem}h1{font-size:1.8rem!important}}
 </style>''',unsafe_allow_html=True)
 
 if st.session_state.get('validation_error'): st.error(st.session_state.pop('validation_error'))
@@ -172,21 +173,21 @@ with st.empty().container():
         st.write(tr('Read the six short sections and two examples. You can keep this page open until you are ready.','请阅读以下6个简短部分和2个示例。准备好后再继续。'))
         for sec in game['sections']:
             st.subheader(text(sec['title'],LANG));st.write(text(sec['text'],LANG))
-        st.subheader(tr('The real game components','真实游戏组件'))
-        cols=st.columns(2)
-        for col,capture in zip(cols,game['rule_captures']):
-            with col:
-                asset(capture['asset'],text(capture['caption'],LANG))
-                st.caption(tr('Source: official rulebook, printed page ','来源：官方规则书，印刷页码 ')+str(capture['page']))
+        with st.expander(tr('Official rulebook reference figures','官方规则书参考图')):
+            cols=st.columns(2)
+            for col,capture in zip(cols,game['rule_captures']):
+                with col:
+                    asset(capture['asset'],text(capture['caption'],LANG))
+                    st.caption(tr('Source: official rulebook, printed page ','来源：官方规则书，印刷页码 ')+str(capture['page']))
         for example in game['examples']:
-            st.subheader(text(example['title'],LANG));asset(example['asset'],tr('Original explanatory schematic','原创说明示意图'));st.write(text(example['text'],LANG))
+            st.subheader(text(example['title'],LANG));asset(example['asset'],tr('AI-generated component illustration; use the text for exact rules.','AI生成的游戏组件示意图；具体规则以文字为准。'));st.write(text(example['text'],LANG))
         st.subheader(tr('Quick questions','简短答疑'))
         for faq in game['faq']:
             with st.expander(text(faq['question'],LANG)): st.write(text(faq['answer'],LANG))
         next_button(stage,tr('Try a short activity','开始简短活动'))
     elif kind in ('trial','quiz'):
         st.subheader(tr('Try one short turn','试做一个简短回合') if kind=='trial' else tr('Check your understanding','检查您的理解'))
-        if kind=='trial': asset(game['examples'][0]['asset'],tr('Use this position for decision 1; decisions 2 and 3 describe the next steps.','第1项决策使用此图；第2和第3项描述后续步骤。'))
+        if kind=='trial': asset(game['trial_asset'],tr('AI-rendered components for decision 1; decisions 2 and 3 describe the next steps.','第1项决策使用此AI组件示意图；第2和第3项描述后续步骤。'))
         st.write(tr('Choose one answer for each item. Answers will be available after the full pilot is complete.','请每题选择一个答案。完整试做结束后可查看答案。'))
         qs=game['trials' if kind=='trial' else 'quiz'];answers={}
         with st.form('game_task'):
@@ -241,3 +242,15 @@ with st.empty().container():
                     st.write(text(q['prompt'],LANG)+' → '+text(answer,LANG))
                     st.caption(q['rule_ref'])
                 st.link_button(tr('Official English rulebook','官方英文规则书'),GAMES[g]['rules_url'])
+
+# A new stage should open at its heading, including after a long lesson/form.
+if st.session_state.get("scroll_stage") != stage:
+    st.session_state.scroll_stage = stage
+    components.html("""<script>
+    const reset = () => {
+      const doc = window.parent.document;
+      const main = doc.querySelector('section[data-testid="stMain"]');
+      if (main) main.scrollTo({top: 0, left: 0, behavior: 'instant'});
+    };
+    requestAnimationFrame(() => requestAnimationFrame(reset));
+    </script>""" + '<!-- ' + stage + ' -->',height=0)

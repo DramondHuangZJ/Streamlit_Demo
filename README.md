@@ -57,7 +57,7 @@ The optional merge consumes a de-identified external game-level CSV. It does not
 - `pilot/storage.py`: SQLite transactions, balanced random assignment, capability-based resume, incremental saving, withdrawal and duplicate prevention.
 - `pilot/content.py`: material loading, scoring, page sequence and questionnaire URL construction.
 - `pilot/analysis.py`: diagnostics, normalized CSV export and optional external-data joining.
-- `assets/`: product renderings, selected official rulebook diagram captures and original instructional schematics.
+- `assets/`: product renderings, selected official rulebook diagram captures and archived original schematics (not displayed).
 - `research/`: reproducible material builders and source notes; downloaded reference PDFs/photos are excluded from Git.
 - `tests/`: storage, scoring, privacy, validation, handoff and full Streamlit-flow tests.
 

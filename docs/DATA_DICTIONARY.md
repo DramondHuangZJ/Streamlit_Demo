@@ -21,7 +21,7 @@ On withdrawal, task responses, timings, game sessions, handoffs, assignment and 
 
 - App: `pilot-1.1.0`.
 - Protocol: `external-survey-per-game-1`.
-- Stimulus: `stimuli-2-real-product-renderings-draft`.
+- Stimulus: `stimuli-3-ai-components-draft`.
 - Rules: `rules-1-source-checked`.
 - External questionnaire: not configured. Set `PILOT_QUESTIONNAIRE_VERSION` when the actual instrument is published.
 

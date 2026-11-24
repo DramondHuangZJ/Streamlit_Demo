@@ -1,6 +1,6 @@
 # Game material sources and visual provenance
 
-Sources were accessed 24–25 November 2026. No full copyrighted rulebook or original publisher photograph is included in the public repository. The researcher requested real-product imagery and selected rulebook captures; this release uses labelled AI product renderings, small official diagram captures and supplemental original task schematics.
+Sources were accessed 24–25 November 2026. No full copyrighted rulebook or original publisher photograph is included in the public repository. The researcher requested real-product imagery and selected rulebook captures; this release uses labelled AI product renderings, high-quality AI component illustrations and small official diagram captures in a separate optional reference section.
 
 | Game/material | Primary source | Use |
 | --- | --- | --- |
@@ -23,7 +23,9 @@ Sources were accessed 24–25 November 2026. No full copyrighted rulebook or ori
 | `dragon_rule_groups.png` | Selected official rulebook p.6 group-adjacency figure. |
 | `azul_rule_board.png` | Selected official rulebook printed p.2 board detail (PDF spread 1). |
 | `azul_rule_tiling.png` | Selected official rulebook printed p.4 wall-tiling figure (PDF spread 1). |
-| `*_example1.svg`, `*_example2.svg` | Original generic teaching diagrams for exact simplified scenarios, supplemental to real-product imagery. |
+| `dragon_castle_trial_v1.png`, `azul_trial_v1.png` | High-quality AI-rendered real-product tile selection scenarios. |
+| `dragon_castle_scoring_v1.png`, `azul_scoring_v1.png` | High-quality AI-rendered component close-ups for worked examples. |
+| `*_example1.svg`, `*_example2.svg` | Archived initial schematic assets, no longer referenced by participant pages. |
 | `*_hero.svg` | Earlier abstract assets retained for history; no longer referenced by product pages. |
 
 AI renderings are not evidence of rules, precise component counts or commercial product quality. No publisher endorsement is claimed. Permission/licence status for public participant use of the official figure excerpts remains part of the recruitment review. The user specifically requested these captures; that request does not establish a publisher licence.
@@ -36,4 +38,4 @@ Each game has six rule sections, two official diagram captures, two worked origi
 
 The CNY 299 displayed scenario is a matched experimental placeholder, not a verified current price. Source URLs, rule sections and keys are stored in the versioned configuration. All ten quiz items have a single documented answer; responses are retained at item level. The Dragon Castle end-condition key follows the detailed countdown rule rather than the publisher product blurb's abbreviated description.
 
-See `IMAGE_PROMPTS.md` for generation prompts and `RESEARCHER_CHECKLIST.md` for required material reviews.
+See `IMAGE_PROMPTS.md` and `TILE_IMAGE_PROMPTS.md` for generation prompts and `RESEARCHER_CHECKLIST.md` for required material reviews.
